@@ -122,8 +122,10 @@ function ProposalDetailContent({ id }: { id: bigint }) {
 
   const canVote = isActive && !!address && !hasVoted;
   const canQueue = isSucceeded && needsQueuing !== false;
-  const canExecute = isQueued && eta !== undefined && nowSeconds !== undefined && eta <= nowSeconds;
-  const canCancel = isPending && !!address && !!proposer && proposer.toLowerCase() === address.toLowerCase();
+  const canExecuteDirect = isSucceeded && needsQueuing === false;
+  const canExecuteQueued = isQueued && eta !== undefined && nowSeconds !== undefined && eta <= nowSeconds;
+  const canExecute = canExecuteDirect || canExecuteQueued;
+  const canCancel = (isPending || isActive) && !!address && !!proposer && proposer.toLowerCase() === address.toLowerCase();
 
   const isProposerSelf = !!address && !!proposer && proposer.toLowerCase() === address.toLowerCase();
 
@@ -473,12 +475,13 @@ function actionDisabledReason(
     return "Queuing is not required for this proposal.";
   }
   if (kind === "execute") {
-    if (state !== ProposalState.Queued) return "Execute is only available when the proposal is Queued.";
+    if (state === ProposalState.Succeeded) return "Execute requires queuing first or the Timelock delay to elapse.";
+    if (state !== ProposalState.Queued) return "Execute is only available when the proposal is Queued or Succeeded without queuing.";
     if (eta !== undefined && now !== undefined && eta > now)
       return "The Timelock delay has not elapsed yet.";
     return "Execute is not available right now.";
   }
-  if (kind === "cancel") return "Cancel is only available to the proposer while the proposal is Pending.";
+  if (kind === "cancel") return "Cancel is only available to the proposer while the proposal is Pending or Active.";
   return "This action is not available.";
 }
 
@@ -494,15 +497,18 @@ function actionHelp(
 ): string {
   if (state === undefined) return "Loading proposal state…";
   if (state === ProposalState.Pending) {
-    if (canCancel) return "You can cancel this proposal while it remains Pending.";
+    if (canCancel) return "You can cancel this proposal while it remains Pending or Active.";
     return isProposerSelf
       ? "Voting has not started yet."
-      : "Voting has not started yet. Only the proposer can cancel while Pending.";
+      : "Voting has not started yet. Only the proposer can cancel while Pending or Active.";
   }
-  if (state === ProposalState.Active) return "Voting is open. Queue and execute become available after voting ends.";
+  if (state === ProposalState.Active) {
+    if (canCancel) return "You can cancel this proposal while it is Active. Voting is open — queue and execute become available after voting ends.";
+    return "Voting is open. Queue and execute become available after voting ends. Only the proposer can cancel while Active.";
+  }
   if (state === ProposalState.Succeeded) {
+    if (canExecute && needsQueuing === false) return "The proposal passed and does not need queuing — execute it directly.";
     if (canQueue) return "The proposal passed. Queue it to start the Timelock delay.";
-    if (needsQueuing === false) return "The proposal passed and does not need queuing — execute it directly.";
     return "The proposal passed.";
   }
   if (state === ProposalState.Queued) {

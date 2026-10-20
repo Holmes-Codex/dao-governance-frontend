@@ -11,7 +11,7 @@ const REVERT_MESSAGES: Record<string, (args: RevertArgs) => string> = {
   GovernorUnexpectedProposalState: (args) =>
     `The proposal is currently ${stateLabel(Number(args?.[1]))}, so this action is not available.`,
   GovernorNonexistentProposal: () => "This proposal does not exist on the Governor.",
-  GovernorUnableToCancel: () => "Only the proposer can cancel, and only while the proposal is Pending.",
+  GovernorUnableToCancel: () => "Only the proposer can cancel, and only while the proposal is Pending or Active.",
   GovernorRestrictedProposer: () => "This description restricts who may submit the proposal.",
   GovernorInvalidProposalLength: () => "Targets, values and calldata must have the same length.",
   GovernorInvalidVoteType: () => "Invalid vote option.",
