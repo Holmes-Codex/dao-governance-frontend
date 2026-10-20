@@ -58,6 +58,7 @@ export function useProposalOnchain(id: bigint | undefined, account?: Address) {
       { ...governor, functionName: "proposalNeedsQueuing", args: [proposalId] },
       { ...governor, functionName: "clock" },
       { ...governor, functionName: "hasVoted", args: [proposalId, voter] },
+      { ...governor, functionName: "proposalProposer", args: [proposalId] },
     ],
     query: { enabled: id !== undefined },
   });
@@ -100,6 +101,7 @@ export function useProposalOnchain(id: bigint | undefined, account?: Address) {
     needsQueuing: value<boolean>(5),
     clock,
     hasVoted: account ? value<boolean>(7) : undefined,
+    proposer: value<`0x${string}`>(8),
     snapshotIsPast,
     quorum: snapshotIsPast ? pastValue<bigint>(0) : undefined,
     votingPower: snapshotIsPast && account ? pastValue<bigint>(1) : undefined,
