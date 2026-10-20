@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: oklch(0.15 0.012 280);
+  --foreground: oklch(0.96 0.005 280);
+  --card: oklch(0.185 0.014 280);
+  --card-foreground: oklch(0.96 0.005 280);
+  --secondary: oklch(0.24 0.016 280);
+  --muted-foreground: oklch(0.7 0.015 280);
+  --border: oklch(0.28 0.018 280);
+  --primary: oklch(0.67 0.17 280);
+  --primary-foreground: oklch(0.99 0 0);
+  --ring: oklch(0.67 0.17 280);
+  --success: oklch(0.76 0.15 160);
+  --warning: oklch(0.82 0.14 80);
+  --destructive: oklch(0.68 0.19 25);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-secondary: var(--secondary);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-destructive: var(--destructive);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
