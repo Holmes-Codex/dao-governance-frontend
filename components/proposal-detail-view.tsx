@@ -280,7 +280,7 @@ function ProposalDetailContent({ id }: { id: bigint }) {
                   : formatDateTime(eta)
                 : "—"}
             </DetailRow>
-            <DetailRow label="Needs queuing" loading={loading}>
+            <DetailRow label="Requires queuing" loading={loading}>
               {needsQueuing === undefined ? "—" : needsQueuing ? "Yes" : "No"}
             </DetailRow>
             <DetailRow label="Your voting power" loading={loading}>
